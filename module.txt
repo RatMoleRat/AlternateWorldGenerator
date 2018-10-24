@@ -1,0 +1,9 @@
+{
+    "id" : "AlternateWorldGenerator",
+    "version" : "0.1.0-SNAPSHOT",
+    "author" : "",
+    "displayName" : "AlternateWorldGenerator",
+    "description" : "",
+    "dependencies" : [],
+    "serverSideOnly" : false
+}
