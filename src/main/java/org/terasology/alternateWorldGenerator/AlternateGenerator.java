@@ -1,5 +1,6 @@
 package org.terasology.alternateWorldGenerator;
 
+import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
 import org.terasology.engine.SimpleUri;
 import org.terasology.registry.In;
 import org.terasology.world.generation.BaseFacetedWorldGenerator;
@@ -21,6 +22,7 @@ public class AlternateGenerator extends BaseFacetedWorldGenerator {
     protected WorldBuilder createWorld() {
         return new WorldBuilder(worldGeneratorPluginLibrary)
                 .addProvider(new SurfaceProvider())
+                .addProvider(new SeaLevelProvider(-5))
                 .addRasterizer(new AlternateWorldRasterizer());
     }
 }

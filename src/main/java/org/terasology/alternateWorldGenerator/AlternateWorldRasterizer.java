@@ -22,6 +22,7 @@ public class AlternateWorldRasterizer implements WorldRasterizer {
     private Block dirt;
     private Block grass;
     private Block tallGrass;
+    private Block water;
 
     //sets initial values
     @Override
@@ -29,34 +30,49 @@ public class AlternateWorldRasterizer implements WorldRasterizer {
         dirt = CoreRegistry.get(BlockManager.class).getBlock("Core:Dirt");
         grass = CoreRegistry.get(BlockManager.class).getBlock("Core:Grass");
         tallGrass = CoreRegistry.get(BlockManager.class).getBlock("Core:TallGrass1");
+        water = CoreRegistry.get(BlockManager.class).getBlock("Core:Water");
     }
 
     //generates the blocks
-    //TODO: figure out why it's taking so long to do stuff
     @Override
     public void generateChunk(CoreChunk chunk, Region chunkRegion) {
         Random rand = new Random();
         SurfaceHeightFacet surfaceHeightFacet = chunkRegion.getFacet(SurfaceHeightFacet.class);
+        BaseVector3i heightInWorld = ChunkMath.calcBlockPos(new Vector3i(0, -5, 0));
         for (Vector3i position : chunkRegion.getRegion()) {
             float surfaceHeight = surfaceHeightFacet.getWorld(position.x, position.z);
             AABB boundsOfObj = chunk.getBlock(ChunkMath.calcBlockPos(position)).getBounds(position);
             if (position.y < surfaceHeight) {
                 if (surfaceHeight<-5){
-                    //TODO: figure out how to put water or something in this location
                     chunk.setBlock(ChunkMath.calcBlockPos(position), dirt);
+                    //adds water where it should
+                    for (float i=position.y; i<surfaceHeight; i+= (boundsOfObj.maxY()-boundsOfObj.minY())) {
+                        BaseVector3i positionOfNew0 = ChunkMath.calcBlockPos(position);
+                        BaseVector3i positionOfNew1 = positionOfNew0;
+                        ((Vector3i) positionOfNew1).y+=i*((int)boundsOfObj.maxY()-(int)boundsOfObj.minY());
+                        positionOfNew1 = ChunkMath.calcBlockPos((Vector3i)positionOfNew1);
+                        ((Vector3i) positionOfNew1).setX(positionOfNew0.x());
+                        ((Vector3i) positionOfNew1).setZ(positionOfNew0.z());
+                        chunkRegion.getRegion().expandToContain(positionOfNew1);
+                        if (positionOfNew1.y() < heightInWorld.y()) {
+                            chunk.setBlock(positionOfNew1,water);
+                        }
+                    }
                 }
                 else{
                     chunk.setBlock(ChunkMath.calcBlockPos(position), grass);
                     //possibly adds grass
                     if (rand.nextInt(9)>7) {
-                        //TODO: test to see if putting grass here works
                         BaseVector3i positionOfNew = ChunkMath.calcBlockPos(position);
                         ((Vector3i) positionOfNew).y+=((int)boundsOfObj.maxY()-(int)boundsOfObj.minY());
-                        //logger.info("positionOfNew: "+((Vector3i) positionOfNew).y);
                         chunkRegion.getRegion().expandToContain(positionOfNew);
                         if (positionOfNew.y() < 64) {
                             chunk.setBlock(positionOfNew,tallGrass);
                         }
+                    }
+                    //random chance for dirt
+                    if (rand.nextInt(50)>48) {
+                        chunk.setBlock(ChunkMath.calcBlockPos(position), dirt);
                     }
                 }
 
