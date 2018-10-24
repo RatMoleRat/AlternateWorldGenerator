@@ -48,11 +48,15 @@ public class AlternateWorldRasterizer implements WorldRasterizer {
                 else{
                     chunk.setBlock(ChunkMath.calcBlockPos(position), grass);
                     //possibly adds grass
-                    if (rand.nextInt(9)>8) {
+                    if (rand.nextInt(9)>7) {
                         //TODO: test to see if putting grass here works
                         BaseVector3i positionOfNew = ChunkMath.calcBlockPos(position);
                         ((Vector3i) positionOfNew).y+=((int)boundsOfObj.maxY()-(int)boundsOfObj.minY());
-                        chunk.setBlock(positionOfNew,tallGrass);
+                        //logger.info("positionOfNew: "+((Vector3i) positionOfNew).y);
+                        chunkRegion.getRegion().expandToContain(positionOfNew);
+                        if (positionOfNew.y() < 64) {
+                            chunk.setBlock(positionOfNew,tallGrass);
+                        }
                     }
                 }
 
