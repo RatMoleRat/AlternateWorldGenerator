@@ -8,6 +8,8 @@ NEW!
 
 -Dirt blocks may appear in with the grass blocks
 
+![img of new additions](https://github.com/RatMoleRat/AlternateWorldGenerator/blob/master/images/AdditionImage.PNG)
+
 
 
 Currently just a basic thing that makes a world in Terasology.
