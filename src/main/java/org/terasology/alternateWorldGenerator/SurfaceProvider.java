@@ -15,7 +15,7 @@ import org.terasology.world.generation.facets.SurfaceHeightFacet;
 //for showing surface of world
 @Produces(SurfaceHeightFacet.class)
 public class SurfaceProvider implements FacetProvider {
-    private Noise surfaceNoise;
+    public Noise surfaceNoise;
 
     //for getting noise
     @Override
@@ -26,6 +26,7 @@ public class SurfaceProvider implements FacetProvider {
     @Override
     public void process(GeneratingRegion region) {
         Border3D border = region.getBorderForFacet(SurfaceHeightFacet.class);
+        border.extendBy(5, 5, 5);
         SurfaceHeightFacet facet = new SurfaceHeightFacet(region.getRegion(), border);
 
         Rect2i processRegion = facet.getWorldRegion();
