@@ -1,8 +1,5 @@
 package org.terasology.alternateWorldGenerator;
 
-import com.fasterxml.uuid.Logger;
-import javafx.geometry.Bounds;
-import org.slf4j.LoggerFactory;
 import org.terasology.math.AABB;
 import org.terasology.math.ChunkMath;
 import org.terasology.math.geom.BaseVector3i;
@@ -18,7 +15,6 @@ import org.terasology.world.generation.facets.SurfaceHeightFacet;
 import java.util.Random;
 
 public class AlternateWorldRasterizer implements WorldRasterizer {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AlternateWorldRasterizer.class);
     private Block dirt;
     private Block grass;
     private Block tallGrass;
@@ -63,11 +59,15 @@ public class AlternateWorldRasterizer implements WorldRasterizer {
                     chunk.setBlock(ChunkMath.calcBlockPos(position), grass);
                     //possibly adds grass
                     if (rand.nextInt(9)>7) {
-                        BaseVector3i positionOfNew = ChunkMath.calcBlockPos(position);
-                        ((Vector3i) positionOfNew).y+=((int)boundsOfObj.maxY()-(int)boundsOfObj.minY());
-                        chunkRegion.getRegion().expandToContain(positionOfNew);
-                        if (positionOfNew.y() < 64) {
-                            chunk.setBlock(positionOfNew,tallGrass);
+                        BaseVector3i positionOfNew0 = ChunkMath.calcBlockPos(position);
+                        BaseVector3i positionOfNew1 = positionOfNew0;
+                        ((Vector3i) positionOfNew1).y+=((int)boundsOfObj.maxY()-(int)boundsOfObj.minY());
+                        positionOfNew1 = ChunkMath.calcBlockPos((Vector3i)positionOfNew1);
+                        ((Vector3i) positionOfNew1).setX(positionOfNew0.x());
+                        ((Vector3i) positionOfNew1).setZ(positionOfNew0.z());
+                        chunkRegion.getRegion().expandToContain(positionOfNew1);
+                        if (positionOfNew1.y() < 64) {
+                            chunk.setBlock(positionOfNew1,tallGrass);
                         }
                     }
                     //random chance for dirt
